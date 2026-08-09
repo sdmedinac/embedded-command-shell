@@ -22,12 +22,15 @@ void run_shell(void)
         index = -1;
 
         printf("\n> ");
-        fgets(buffer, sizeof(buffer), stdin);
+        if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+
         
         command = strtok(buffer, " ");
         argument = strtok(NULL, " ");
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < command_count; i++){
 
             if(strcmp(command, command_table[i].name) == 0){
 
@@ -42,19 +45,23 @@ void run_shell(void)
             continue;
         }
 
-        if(strcmp(command, "exit\n") == 0){
+        if(strcmp(command, "exit") == 0){
         
             printf("Goodbye\n");
             break;
         }
         else if(strcmp(command, "led") == 0){
             
-            if(strcmp(argument, "off\n") == 0){
+            if(argument == NULL){
+                
+                printf("Missing Argument\n");
+            }
+            else if(strcmp(argument, "off") == 0){
 
                 led_off();
                 printf("\nLED OFF\n");
             }
-            else if(strcmp(argument, "on\n") == 0){
+            else if(strcmp(argument, "on") == 0){
                 
                 led_on();
                 printf("\nLED ON\n");
@@ -64,13 +71,13 @@ void run_shell(void)
                 printf("\nInvalid argument\n");
             }
         }
-        else if(strcmp(command, "led\n") == 0){
-            
-            printf("\nMissing argument\n");
-        }
         else if(strcmp(command, "adc") == 0){
         
-            if(strcmp(argument, "read\n") == 0){
+            if(argument == NULL){
+                
+                printf("Missing argument\n");
+            }
+            else if(strcmp(argument, "read") == 0){
                 
                 printf("ADC VALUE: %d\n", adc_read());
             }
@@ -79,14 +86,10 @@ void run_shell(void)
                 printf("Invalid argument\n");
             }
         }
-        else if(strcmp(command, "adc\n") == 0){
-
-            printf("\nMissing argument\n");
-        }
         else{
 
             printf("Unknown Command\n");
         }
-    }
-    
+    }   
+
 }

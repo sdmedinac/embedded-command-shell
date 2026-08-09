@@ -4,11 +4,13 @@
 
 Command command_table[] = {
     
-    {"help\n", cmd_help},
-    {"status\n", cmd_status},
-    {"version\n", cmd_version},
-    {"reset\n", cmd_reset}
+    {"help", cmd_help},
+    {"status", cmd_status},
+    {"version", cmd_version},
+    {"reset", cmd_reset}
 };
+
+const int command_count = sizeof(command_table) / sizeof(command_table[0]);
 
 void cmd_help(void)
 {
@@ -19,7 +21,7 @@ void cmd_help(void)
 
 void cmd_status(void)
 {
-    printf("SYSTEM OK\n");
+    printf("\nSYSTEM OK\n");
 
     if(led_get_state()){
         

@@ -10,6 +10,7 @@ typedef struct
 } Command;
 
 extern Command command_table[];
+extern const int command_count;
 
 void cmd_help(void);
 void cmd_status(void);
