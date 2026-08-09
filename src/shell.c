@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #include "../include/shell.h"
 #include "../include/led.h"
 #include "../include/adc.h"
 #include "../include/commands.h"
-#include <stdlib.h>
-#include <time.h>
 
+static ShellState shell_state = SHELL_IDLE;
 
 void run_shell(void)
 {
@@ -19,16 +20,22 @@ void run_shell(void)
 
     while(1){
         
+        shell_state = SHELL_IDLE;
         index = -1;
 
         printf("\n> ");
         if(fgets(buffer, sizeof(buffer), stdin) != NULL)
         buffer[strcspn(buffer, "\n")] = '\0';
 
-
         
         command = strtok(buffer, " ");
         argument = strtok(NULL, " ");
+
+        if(command == NULL){
+            
+            shell_state = SHELL_IDLE;
+            continue;
+        }
 
         for(int i = 0; i < command_count; i++){
 
@@ -41,7 +48,8 @@ void run_shell(void)
 
         if(index != -1){
             
-            command_table[index].handler();
+            command_table[index].handler(argument);
+            shell_state = SHELL_IDLE;
             continue;
         }
 
@@ -50,46 +58,17 @@ void run_shell(void)
             printf("Goodbye\n");
             break;
         }
-        else if(strcmp(command, "led") == 0){
-            
-            if(argument == NULL){
-                
-                printf("Missing Argument\n");
-            }
-            else if(strcmp(argument, "off") == 0){
-
-                led_off();
-                printf("\nLED OFF\n");
-            }
-            else if(strcmp(argument, "on") == 0){
-                
-                led_on();
-                printf("\nLED ON\n");
-            }
-            else{
-                
-                printf("\nInvalid argument\n");
-            }
-        }
-        else if(strcmp(command, "adc") == 0){
-        
-            if(argument == NULL){
-                
-                printf("Missing argument\n");
-            }
-            else if(strcmp(argument, "read") == 0){
-                
-                printf("ADC VALUE: %d\n", adc_read());
-            }
-            else{
-                
-                printf("Invalid argument\n");
-            }
-        }
         else{
 
+            shell_state = SHELL_ERROR;
             printf("Unknown Command\n");
+            shell_state = SHELL_IDLE;
         }
     }   
 
+}
+
+ShellState get_shell_state(void)
+{
+    return shell_state;
 }
