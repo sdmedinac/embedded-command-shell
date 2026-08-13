@@ -22,7 +22,7 @@ void cmd_help(char *argument)
 {
     printf("\nAvailable Commands: \n");
     printf("help\nstatus\nversion\nreset\n");
-    printf("led on\nled off\nadc read\nexit\n");
+    printf("led on\nled off\nadc read\nexit\nstate\n");
 }
 
 void cmd_status(char *argument)
